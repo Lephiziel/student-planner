@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
-
+	"github.com/Lephiziel/student-planner/internal/auth"
+	"github.com/Lephiziel/student-planner/internal/user"
 	"github.com/Lephiziel/student-planner/pkg/config"
 	"github.com/Lephiziel/student-planner/pkg/database"
 	"github.com/gin-contrib/cors"
@@ -10,14 +10,9 @@ import (
 )
 
 func main() {
-	// For test cfg
 	cfg := config.Load()
-	fmt.Println(cfg.DBHost)
 
-	// For test db
 	db := database.Connect(cfg)
-	query := db.Exec("SELECT 1")
-	fmt.Println(query)
 
 	router := gin.Default()
 
@@ -25,11 +20,23 @@ func main() {
 		AllowOrigins: []string{"http://localhost:5173"},
 	}))
 
+	db.AutoMigrate(&user.User{})
+
+	repo := user.NewUserRepository(db)
+
+	userService := user.NewUserService(*repo)
+
+	authHandler := auth.NewAuthHandler(*userService)
+
+	api := router.Group("/api")
+
+	authHandler.RegisterRoutes(api)
+
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"status": "ok",
 		})
 	})
 
-	router.Run(cfg.AppPort)
+	router.Run(":" + cfg.AppPort)
 }
