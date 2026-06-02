@@ -18,6 +18,8 @@ func main() {
 
 	router.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"http://localhost:5173"},
+		AllowHeaders: []string{"Origin", "Content-Type", "Authorization"},
+		AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 	}))
 
 	db.AutoMigrate(&user.User{})
@@ -26,11 +28,15 @@ func main() {
 
 	userService := user.NewUserService(*repo)
 
-	authHandler := auth.NewAuthHandler(*userService)
+	authHandler := auth.NewAuthHandler(*userService, cfg.JWTSecret)
+
+	userHandler := user.NewUserHandler(*userService, cfg.JWTSecret)
 
 	api := router.Group("/api")
 
 	authHandler.RegisterRoutes(api)
+
+	userHandler.RegisterRoutes(api)
 
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{

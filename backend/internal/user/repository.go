@@ -27,3 +27,11 @@ func (ur *UserRepository) Create(user User) (User, error) {
 
 	return user, result.Error
 }
+
+func (ur *UserRepository) GetByID(id uint) (User, error) {
+	var user User
+
+	result := ur.db.Where("id = ?", id).First(&user)
+
+	return user, result.Error
+}

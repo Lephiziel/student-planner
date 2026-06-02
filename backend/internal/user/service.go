@@ -45,3 +45,33 @@ func (us *UserService) Register(name, email, password string) (User, error) {
 
 	return user, err
 }
+
+func (us *UserService) Login(email, password string) (User, error) {
+	user, err := us.repo.FindByEmail(email)
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return User{}, errors.New("invalid credentials")
+		}
+		return User{}, err
+	}
+
+	passwdErr := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
+	if passwdErr != nil {
+		return User{}, errors.New("invalid credentials")
+	}
+
+	return user, nil
+}
+
+func (us *UserService) GetByID(id uint) (User, error) {
+	user, err := us.repo.GetByID(id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return User{}, errors.New("User not found")
+		}
+		return User{}, err
+	}
+
+	return user, err
+}
