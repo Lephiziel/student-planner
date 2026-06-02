@@ -1,10 +1,13 @@
 package auth
 
 import (
+	"errors"
 	"net/http"
 
+	"github.com/Lephiziel/student-planner/internal/middleware"
 	"github.com/Lephiziel/student-planner/internal/user"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type AuthHandler struct {
@@ -39,6 +42,10 @@ type LoginRequest struct {
 type LoginResponse struct {
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
+}
+
+type RefreshRequest struct {
+	RefreshToken string `json:"refresh_token" binding:"required"`
 }
 
 func (ah *AuthHandler) Register(c *gin.Context) {
@@ -106,10 +113,50 @@ func (ah *AuthHandler) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": loggedUser})
 }
 
+func (ah *AuthHandler) Refresh(c *gin.Context) {
+	var reqBody RefreshRequest
+	if err := c.ShouldBindJSON(&reqBody); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	token, err := jwt.ParseWithClaims(reqBody.RefreshToken, &middleware.Claims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("unexpected signing method")
+		}
+		return []byte(ah.secret), nil
+	})
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
+		return
+	}
+
+	if !token.Valid {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
+		return
+	}
+
+	claims, ok := token.Claims.(*middleware.Claims)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Something bad with token"})
+		return
+	}
+
+	newAccessToken, err := GenerateAccessToken(claims.UserID, ah.secret)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"access_token": newAccessToken})
+}
+
 func (ah *AuthHandler) RegisterRoutes(rg *gin.RouterGroup) {
 	users := rg.Group("/auth")
 	{
 		users.POST("/register", ah.Register)
 		users.POST("/login", ah.Login)
+		users.POST("/refresh", ah.Refresh)
 	}
 }
