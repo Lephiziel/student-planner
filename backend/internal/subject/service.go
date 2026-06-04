@@ -42,6 +42,9 @@ func (ss *SubjectService) Update(id, userID uint, name, color string) (Subject, 
 	subject, err := ss.repo.GetByID(id, userID)
 
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return Subject{}, errors.New("subject not found")
+		}
 		return Subject{}, err
 	}
 
