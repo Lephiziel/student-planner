@@ -9,7 +9,7 @@ import (
 type Task struct {
 	gorm.Model
 	UserID      uint       `json:"user_id" gorm:"not null"`
-	SubjectID   *uint      `json:"subject_id" gorm:"not null"`
+	SubjectID   *uint      `json:"subject_id"`
 	Title       string     `json:"title"`
 	Description string     `json:"description"`
 	DueDate     *time.Time `json:"due_date"`

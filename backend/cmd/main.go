@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/Lephiziel/student-planner/internal/auth"
 	"github.com/Lephiziel/student-planner/internal/subject"
+	"github.com/Lephiziel/student-planner/internal/task"
 	"github.com/Lephiziel/student-planner/internal/user"
 	"github.com/Lephiziel/student-planner/pkg/config"
 	"github.com/Lephiziel/student-planner/pkg/database"
@@ -23,15 +24,21 @@ func main() {
 		AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 	}))
 
-	db.AutoMigrate(&user.User{}, &subject.Subject{})
+	db.AutoMigrate(&user.User{}, &subject.Subject{}, &task.Task{})
 
 	repo := user.NewUserRepository(db)
 
 	subjectRepo := subject.NewSubjectRepository(db)
 
+	taskRepo := task.NewTaskRepository(db)
+
 	userService := user.NewUserService(*repo)
 
 	subjectService := subject.NewSubjectService(*subjectRepo)
+
+	taskService := task.NewTaskService(*taskRepo)
+
+	taskHandler := task.NewTaskHandler(*taskService, cfg.JWTSecret)
 
 	authHandler := auth.NewAuthHandler(*userService, cfg.JWTSecret)
 
@@ -46,6 +53,8 @@ func main() {
 	userHandler.RegisterRoutes(api)
 
 	subjectHandler.RegisterRoutes(api)
+
+	taskHandler.RegisterRoutes(api)
 
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{
