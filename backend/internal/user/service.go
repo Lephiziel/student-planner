@@ -61,7 +61,7 @@ func (us *UserService) Login(email, password string) (User, error) {
 		return User{}, errors.New("invalid credentials")
 	}
 
-	return user, nil
+	return user, err
 }
 
 func (us *UserService) GetByID(id uint) (User, error) {
