@@ -22,9 +22,9 @@ export default function CalendarPage() {
     const now = new Date()
     setEvents(tasks.filter(t => t.due_date).map(t => {
       const due = new Date(t.due_date)
-      let color = '#6366f1'
-      if (t.status === 'done') color = '#3f3f46'
-      else if (due < now) color = '#ef4444'
+      let color = '#a78bfa'
+      if (t.status === 'done') color = '#3d3550'
+      else if (due < now) color = '#f87171'
       else { const s = subjects.find(s => s.ID === t.subject_id); if (s?.color) color = s.color }
       return { id: String(t.ID), title: t.title, date: t.due_date.split('T')[0], backgroundColor: color, borderColor: color, extendedProps: { task: t } }
     }))
@@ -33,12 +33,12 @@ export default function CalendarPage() {
   return (
     <Layout>
       <div className="anim" style={{ marginBottom: '20px' }}>
-        <h1 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-1)', letterSpacing: '-0.02em' }}>Календарь</h1>
-        <p style={{ fontSize: '13px', color: 'var(--text-3)', marginTop: '2px' }}>Задачи по датам дедлайна</p>
+        <p className="section-label">Расписание</p>
+        <h1 style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text-1)', letterSpacing: '-0.025em' }}>Календарь</h1>
       </div>
 
       <div className="anim d1" style={{ display: 'flex', gap: '16px', marginBottom: '14px', flexWrap: 'wrap' }}>
-        {[['#6366f1', 'Активные'], ['#ef4444', 'Просрочено'], ['#3f3f46', 'Выполнено']].map(([c, l]) => (
+        {[['#a78bfa','Активные'],['#f87171','Просрочено'],['#3d3550','Выполнено']].map(([c,l]) => (
           <div key={l} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
             <div style={{ width: '8px', height: '8px', borderRadius: '2px', background: c }} />
             <span style={{ fontSize: '11px', color: 'var(--text-3)' }}>{l}</span>
@@ -46,7 +46,7 @@ export default function CalendarPage() {
         ))}
       </div>
 
-      <div className="anim d2" style={{ background: 'var(--bg-1)', border: '1px solid var(--border)', borderRadius: '10px', padding: '16px' }}>
+      <div className="anim d2" style={{ background: 'var(--bg-1)', border: '1px solid var(--border)', borderRadius: '12px', padding: '16px' }}>
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
@@ -59,31 +59,28 @@ export default function CalendarPage() {
         />
       </div>
 
-      {/* Modal */}
       {selected && (
-        <div className="anim-fade" onClick={() => setSelected(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: '20px' }}>
-          <div className="anim-scale" onClick={e => e.stopPropagation()} style={{ background: 'var(--bg-1)', border: '1px solid var(--border-2)', borderRadius: '12px', padding: '20px', width: '100%', maxWidth: '380px' }}>
+        <div className="anim-fade" onClick={() => setSelected(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: '20px' }}>
+          <div className="anim-scale" onClick={e => e.stopPropagation()} style={{ background: 'var(--bg-1)', border: '1px solid var(--border-accent)', borderRadius: '16px', padding: '22px', width: '100%', maxWidth: '380px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
               <div style={{ flex: 1, paddingRight: '12px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '5px' }}>
                   <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: PRIORITY_C[selected.priority] }} />
                   <span style={{ fontSize: '11px', color: 'var(--text-3)' }}>{PRIORITY_L[selected.priority]}</span>
                 </div>
-                <h2 style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text-1)', letterSpacing: '-0.01em' }}>{selected.title}</h2>
+                <h2 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-1)', letterSpacing: '-0.015em' }}>{selected.title}</h2>
               </div>
               <button className="icon-btn" onClick={() => setSelected(null)}>✕</button>
             </div>
-
             {selected.description && (
               <p style={{ fontSize: '13px', color: 'var(--text-2)', marginBottom: '16px', lineHeight: 1.6 }}>{selected.description}</p>
             )}
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
               {[
                 { label: 'Статус', value: STATUS_L[selected.status] },
                 selected.due_date && { label: 'Дедлайн', value: new Date(selected.due_date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }) },
               ].filter(Boolean).map((item, i, arr) => (
-                <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: i < arr.length - 1 ? '1px solid var(--border)' : 'none' }}>
+                <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '9px 0', borderBottom: i < arr.length - 1 ? '1px solid var(--border)' : 'none' }}>
                   <span style={{ fontSize: '12px', color: 'var(--text-3)' }}>{item.label}</span>
                   <span style={{ fontSize: '12px', color: 'var(--text-1)', fontWeight: 500 }}>{item.value}</span>
                 </div>

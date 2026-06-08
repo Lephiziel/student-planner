@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Layout from '../components/Layout'
 import api from '../api/axios'
 
-const COLORS = ['#6366f1', '#22c55e', '#eab308', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#f97316', '#14b8a6', '#a855f7']
+const COLORS = ['#a78bfa','#34d399','#fbbf24','#f87171','#60a5fa','#f472b6','#fb923c','#2dd4bf','#818cf8','#a3e635']
 
 export default function SubjectsPage() {
   const [subjects, setSubjects] = useState([])
@@ -26,36 +26,36 @@ export default function SubjectsPage() {
     } catch (err) { setError(err.response?.data?.error || 'Ошибка') }
   }
 
-  const handleDelete = async id => { if (!confirm('Удалить?')) return; await api.delete(`/subjects/${id}`); fetch() }
+  const handleDelete = async id => { if (!confirm('Удалить предмет?')) return; await api.delete(`/subjects/${id}`); fetch() }
 
   return (
     <Layout>
       <div className="anim" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
         <div>
-          <h1 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-1)', letterSpacing: '-0.02em' }}>Предметы</h1>
-          <p style={{ fontSize: '13px', color: 'var(--text-3)', marginTop: '2px' }}>Учебные дисциплины</p>
+          <p className="section-label">Учёба</p>
+          <h1 style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text-1)', letterSpacing: '-0.025em' }}>Предметы</h1>
         </div>
         <button className="btn btn-primary" onClick={openCreate}>+ Добавить</button>
       </div>
 
       {showForm && (
-        <div className="anim-scale" style={{ background: 'var(--bg-1)', border: '1px solid var(--border-2)', borderRadius: '10px', padding: '16px', marginBottom: '16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-            <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-1)' }}>{editId ? 'Редактировать' : 'Новый предмет'}</span>
+        <div className="anim-scale" style={{ background: 'var(--bg-1)', border: '1px solid var(--border-accent)', borderRadius: '14px', padding: '18px', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+            <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-1)' }}>{editId ? 'Редактировать' : 'Новый предмет'}</span>
             <button className="icon-btn" onClick={() => setShowForm(false)}>✕</button>
           </div>
-          {error && <p style={{ fontSize: '12px', color: 'var(--red)', marginBottom: '10px' }}>{error}</p>}
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {error && <p style={{ fontSize: '12px', color: 'var(--red)', marginBottom: '12px' }}>{error}</p>}
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             <div>
               <label className="field-label">Название</label>
               <input className="input" type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required placeholder="Математика" />
             </div>
             <div>
               <label className="field-label">Цвет</label>
-              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '2px' }}>
+              <div style={{ display: 'flex', gap: '7px', flexWrap: 'wrap', marginTop: '4px' }}>
                 {COLORS.map(c => (
                   <button key={c} type="button" onClick={() => setForm({ ...form, color: c })} style={{
-                    width: '22px', height: '22px', borderRadius: '50%', background: c, border: 'none', cursor: 'pointer',
+                    width: '24px', height: '24px', borderRadius: '50%', background: c, border: 'none', cursor: 'pointer',
                     outline: form.color === c ? `2px solid ${c}` : '2px solid transparent',
                     outlineOffset: '2px',
                     transform: form.color === c ? 'scale(1.15)' : 'scale(1)',
@@ -77,21 +77,22 @@ export default function SubjectsPage() {
       ) : subjects.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--text-3)', fontSize: '13px' }}>Предметов пока нет</div>
       ) : (
-        <div style={{ background: 'var(--bg-1)', border: '1px solid var(--border)', borderRadius: '10px', overflow: 'hidden' }}>
+        <div style={{ background: 'var(--bg-1)', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden' }}>
           {subjects.map((s, i) => (
-            <div key={s.ID} className={`anim d${Math.min(i + 1, 4)}`} style={{
-              display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px',
-              borderTop: i > 0 ? '1px solid var(--border)' : 'none',
-              transition: 'background 0.1s',
+            <div key={s.ID} className={`anim d${Math.min(i+1,4)}`} style={{
+              display: 'flex', alignItems: 'center', gap: '10px', padding: '11px 14px',
+              borderTop: i > 0 ? '1px solid var(--border)' : 'none', transition: 'background 0.1s',
             }}
               onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-2)'}
               onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
             >
-              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: s.color || '#6366f1', flexShrink: 0 }} />
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: s.color || 'var(--accent)', flexShrink: 0 }} />
               <span style={{ fontSize: '13px', color: 'var(--text-1)', fontWeight: 500, flex: 1 }}>{s.name}</span>
               <div style={{ display: 'flex', gap: '2px' }}>
                 <button className="icon-btn" onClick={() => openEdit(s)}>✏</button>
-                <button className="icon-btn" onClick={() => handleDelete(s.ID)} onMouseEnter={e => e.currentTarget.style.color = 'var(--red)'} onMouseLeave={e => e.currentTarget.style.color = 'var(--text-3)'}>✕</button>
+                <button className="icon-btn" onClick={() => handleDelete(s.ID)}
+                  onMouseEnter={e => e.currentTarget.style.color = 'var(--red)'}
+                  onMouseLeave={e => e.currentTarget.style.color = 'var(--text-3)'}>✕</button>
               </div>
             </div>
           ))}
