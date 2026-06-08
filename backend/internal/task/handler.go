@@ -226,11 +226,29 @@ func (th *TaskHandler) UpdateStatus(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "updated"})
 }
 
+func (th *TaskHandler) GetStats(c *gin.Context) {
+	raw, ok := c.Get("userID")
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+	userID := raw.(uint)
+
+	result, err := th.taskService.GetStats(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"success": result})
+}
+
 func (th *TaskHandler) RegisterRoutes(rg *gin.RouterGroup) {
 	tasks := rg.Group("/tasks")
 	tasks.Use(middleware.AuthMiddleware(th.secret))
 	{
 		tasks.GET("/", th.GetAll)
+		tasks.GET("/stats", th.GetStats)
 		tasks.POST("/", th.Create)
 		tasks.PUT("/:id", th.Update)
 		tasks.DELETE("/:id", th.Delete)

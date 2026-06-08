@@ -2,6 +2,7 @@ package task
 
 import (
 	"errors"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -78,6 +79,37 @@ func (tr *TaskRepository) GetByID(id, userID uint) (Task, error) {
 	result := tr.db.Where("id = ? AND user_id = ?", id, userID).First(&task)
 
 	return task, result.Error
+}
+
+func (tr *TaskRepository) GetStats(userID uint) (TaskStats, error) {
+	var taskStats TaskStats
+
+	total := tr.db.Model(&Task{}).Where("user_id = ?", userID).Count(&taskStats.Total)
+	if total.Error != nil {
+		return TaskStats{}, total.Error
+	}
+
+	done := tr.db.Model(&Task{}).Where("user_id = ? AND status = ?", userID, "done").Count(&taskStats.Done)
+	if done.Error != nil {
+		return TaskStats{}, done.Error
+	}
+
+	inProgress := tr.db.Model(&Task{}).Where("user_id = ? AND status = ?", userID, "in_progress").Count(&taskStats.InProgress)
+	if inProgress.Error != nil {
+		return TaskStats{}, inProgress.Error
+	}
+
+	todo := tr.db.Model(&Task{}).Where("user_id = ? AND status = ?", userID, "todo").Count(&taskStats.Todo)
+	if todo.Error != nil {
+		return TaskStats{}, todo.Error
+	}
+
+	overdue := tr.db.Model(&Task{}).Where("user_id = ? AND status != ? AND due_date < ?", userID, "done", time.Now()).Count(&taskStats.Overdue)
+	if overdue.Error != nil {
+		return TaskStats{}, overdue.Error
+	}
+
+	return taskStats, nil
 }
 
 func (tr *TaskRepository) UpdateStatus(id, userID uint, status string) error {

@@ -79,3 +79,12 @@ func (ts *TaskService) UpdateStatus(id, userID uint, status string) error {
 	}
 	return nil
 }
+
+func (ts *TaskService) GetStats(userID uint) (TaskStats, error) {
+	result, err := ts.repo.GetStats(userID)
+	if err != nil {
+		return TaskStats{}, err
+	}
+
+	return result, nil
+}
