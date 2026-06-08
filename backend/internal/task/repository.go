@@ -16,7 +16,7 @@ func NewTaskRepository(db *gorm.DB) *TaskRepository {
 	}
 }
 
-func (tr *TaskRepository) GetAll(userID uint, status, priority string, subjectID *uint) ([]Task, error) {
+func (tr *TaskRepository) GetAll(userID uint, status, priority, dueFrom, dueTo string, subjectID *uint) ([]Task, error) {
 	var task []Task
 
 	result := tr.db.Where("user_id = ?", userID)
@@ -27,6 +27,14 @@ func (tr *TaskRepository) GetAll(userID uint, status, priority string, subjectID
 
 	if priority != "" {
 		result = result.Where("priority = ?", priority)
+	}
+
+	if dueFrom != "" {
+		result = result.Where("due_date >= ?", dueFrom)
+	}
+
+	if dueTo != "" {
+		result = result.Where("due_date <= ?", dueTo)
 	}
 
 	if subjectID != nil {

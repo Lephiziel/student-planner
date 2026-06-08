@@ -16,8 +16,8 @@ func NewTaskService(repo TaskRepository) *TaskService {
 	}
 }
 
-func (ts *TaskService) GetAll(userID uint, status, priority string, subjectID *uint) ([]Task, error) {
-	result, err := ts.repo.GetAll(userID, status, priority, subjectID)
+func (ts *TaskService) GetAll(userID uint, status, priority, dueFrom, dueTo string, subjectID *uint) ([]Task, error) {
+	result, err := ts.repo.GetAll(userID, status, priority, dueFrom, dueTo, subjectID)
 
 	return result, err
 }
