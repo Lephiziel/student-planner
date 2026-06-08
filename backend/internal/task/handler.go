@@ -47,6 +47,10 @@ func (th *TaskHandler) GetAll(c *gin.Context) {
 
 	priority := c.Query("priority")
 
+	dueFrom := c.Query("due_from")
+
+	dueTo := c.Query("due_to")
+
 	subjectID := c.Query("subject_id")
 
 	var parsedID *uint
@@ -63,7 +67,7 @@ func (th *TaskHandler) GetAll(c *gin.Context) {
 		parsedID = &id
 	}
 
-	result, err := th.taskService.GetAll(userID, status, priority, parsedID)
+	result, err := th.taskService.GetAll(userID, status, priority, dueFrom, dueTo, parsedID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -230,6 +234,6 @@ func (th *TaskHandler) RegisterRoutes(rg *gin.RouterGroup) {
 		tasks.POST("/", th.Create)
 		tasks.PUT("/:id", th.Update)
 		tasks.DELETE("/:id", th.Delete)
-		tasks.PATCH("/:id", th.UpdateStatus)
+		tasks.PATCH("/:id/status", th.UpdateStatus)
 	}
 }
