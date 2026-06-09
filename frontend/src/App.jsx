@@ -6,8 +6,11 @@ import TasksPage from './pages/TasksPage'
 import SubjectsPage from './pages/SubjectsPage'
 import CalendarPage from './pages/CalendarPage'
 import ProtectedRoute from './components/ProtectedRoute'
+import useNotifications from './hooks/useNotifications'
 
 function App() {
+  useNotifications()
+
   return (
     <BrowserRouter>
       <Routes>
