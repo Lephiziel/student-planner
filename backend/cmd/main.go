@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/Lephiziel/student-planner/internal/auth"
+	"github.com/Lephiziel/student-planner/internal/grade"
 	"github.com/Lephiziel/student-planner/internal/subject"
 	"github.com/Lephiziel/student-planner/internal/task"
 	"github.com/Lephiziel/student-planner/internal/user"
@@ -24,7 +25,7 @@ func main() {
 		AllowMethods: []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 	}))
 
-	db.AutoMigrate(&user.User{}, &subject.Subject{}, &task.Task{})
+	db.AutoMigrate(&user.User{}, &subject.Subject{}, &task.Task{}, &grade.Grade{})
 
 	repo := user.NewUserRepository(db)
 
@@ -32,9 +33,13 @@ func main() {
 
 	taskRepo := task.NewTaskRepository(db)
 
+	gradeRepo := grade.NewGradeRepository(db)
+
 	userService := user.NewUserService(*repo)
 
 	subjectService := subject.NewSubjectService(*subjectRepo)
+
+	gradeService := grade.NewGradeService(*gradeRepo, *taskRepo)
 
 	taskService := task.NewTaskService(*taskRepo)
 
@@ -43,6 +48,8 @@ func main() {
 	authHandler := auth.NewAuthHandler(*userService, cfg.JWTSecret)
 
 	userHandler := user.NewUserHandler(*userService, cfg.JWTSecret)
+
+	gradeHandler := grade.NewGradeHandler(*gradeService, cfg.JWTSecret)
 
 	subjectHandler := subject.NewSubjectHandler(*subjectService, cfg.JWTSecret)
 
@@ -55,6 +62,8 @@ func main() {
 	subjectHandler.RegisterRoutes(api)
 
 	taskHandler.RegisterRoutes(api)
+
+	gradeHandler.RegisterRoutes(api)
 
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{
