@@ -53,6 +53,8 @@ func (th *TaskHandler) GetAll(c *gin.Context) {
 
 	subjectID := c.Query("subject_id")
 
+	search := c.Query("search")
+
 	var parsedID *uint
 
 	if subjectID != "" {
@@ -67,7 +69,7 @@ func (th *TaskHandler) GetAll(c *gin.Context) {
 		parsedID = &id
 	}
 
-	result, err := th.taskService.GetAll(userID, status, priority, dueFrom, dueTo, parsedID)
+	result, err := th.taskService.GetAll(userID, status, priority, dueFrom, dueTo, search, parsedID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

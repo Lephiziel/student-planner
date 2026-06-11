@@ -17,7 +17,7 @@ func NewTaskRepository(db *gorm.DB) *TaskRepository {
 	}
 }
 
-func (tr *TaskRepository) GetAll(userID uint, status, priority, dueFrom, dueTo string, subjectID *uint) ([]Task, error) {
+func (tr *TaskRepository) GetAll(userID uint, status, priority, dueFrom, dueTo, search string, subjectID *uint) ([]Task, error) {
 	var task []Task
 
 	result := tr.db.Where("user_id = ?", userID)
@@ -40,6 +40,10 @@ func (tr *TaskRepository) GetAll(userID uint, status, priority, dueFrom, dueTo s
 
 	if subjectID != nil {
 		result = result.Where("subject_id = ?", subjectID)
+	}
+
+	if search != "" {
+		result = result.Where("title ILIKE ?", "%"+search+"%")
 	}
 
 	result = result.Find(&task)

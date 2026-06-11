@@ -66,3 +66,12 @@ func (ss *SubjectService) Delete(id, userID uint) error {
 	}
 	return nil
 }
+
+func (ss *SubjectService) GetStats(userID uint) ([]SubjectStats, error) {
+	result, err := ss.repo.GetStats(userID)
+	if err != nil {
+		return []SubjectStats{}, err
+	}
+
+	return result, nil
+}
