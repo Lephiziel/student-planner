@@ -6,13 +6,23 @@ const COLORS = ['#a78bfa','#34d399','#fbbf24','#f87171','#60a5fa','#f472b6','#fb
 
 export default function SubjectsPage() {
   const [subjects, setSubjects] = useState([])
+  const [stats, setStats] = useState({})
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState({ name: '', color: COLORS[0] })
   const [editId, setEditId] = useState(null)
   const [error, setError] = useState('')
 
-  const fetch = () => api.get('/subjects/').then(r => { setSubjects(r.data.success || []); setLoading(false) }).catch(console.error)
+  const fetch = () => Promise.all([
+    api.get('/subjects/'),
+    api.get('/subjects/stats'),
+  ]).then(([subRes, statsRes]) => {
+    setSubjects(subRes.data.success || [])
+    const statsMap = {}
+    ;(statsRes.data.success || []).forEach(s => { statsMap[s.subject_id] = s })
+    setStats(statsMap)
+    setLoading(false)
+  }).catch(console.error)
   useEffect(() => { fetch() }, [])
 
   const openCreate = () => { setForm({ name: '', color: COLORS[0] }); setEditId(null); setShowForm(true); setError('') }
@@ -88,6 +98,24 @@ export default function SubjectsPage() {
             >
               <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: s.color || 'var(--accent)', flexShrink: 0 }} />
               <span style={{ fontSize: '13px', color: 'var(--text-1)', fontWeight: 500, flex: 1 }}>{s.name}</span>
+              {(() => {
+                const st = stats[s.ID]
+                if (!st || st.total_tasks === 0) {
+                  return <span style={{ fontSize: '11px', color: 'var(--text-3)' }}>Нет задач</span>
+                }
+                const pct = Math.round((st.done_tasks / st.total_tasks) * 100)
+                return (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '11px', color: 'var(--text-3)' }}>
+                      {st.done_tasks}/{st.total_tasks} задач
+                    </span>
+                    <div style={{ width: '60px', height: '4px', background: 'var(--bg-3)', borderRadius: '99px', overflow: 'hidden' }}>
+                      <div style={{ width: `${pct}%`, height: '100%', background: s.color || 'var(--accent)', borderRadius: '99px', transition: 'width 0.5s ease' }} />
+                    </div>
+                    <span style={{ fontSize: '11px', color: 'var(--text-2)', fontWeight: 600, minWidth: '28px', textAlign: 'right' }}>{pct}%</span>
+                  </div>
+                )
+              })()}
               <div style={{ display: 'flex', gap: '2px' }}>
                 <button className="icon-btn" onClick={() => openEdit(s)}>✏</button>
                 <button className="icon-btn" onClick={() => handleDelete(s.ID)}

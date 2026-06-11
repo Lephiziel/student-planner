@@ -143,11 +143,30 @@ func (sh *SubjectHandler) Delete(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "deleted"})
 }
 
+func (sh *SubjectHandler) GetStats(c *gin.Context) {
+	raw, ok := c.Get("userID")
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	userID := raw.(uint)
+
+	result, err := sh.subjectService.GetStats(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"success": result})
+}
+
 func (sh *SubjectHandler) RegisterRoutes(rg *gin.RouterGroup) {
 	subjects := rg.Group("/subjects")
 	subjects.Use(middleware.AuthMiddleware(sh.secret))
 	{
 		subjects.GET("/", sh.GetAll)
+		subjects.GET("/stats", sh.GetStats)
 		subjects.POST("/", sh.Create)
 		subjects.PUT("/:id", sh.Update)
 		subjects.DELETE("/:id", sh.Delete)

@@ -17,6 +17,8 @@ export default function TasksPage() {
   const [showForm, setShowForm] = useState(false)
   const [error, setError] = useState('')
   const [filters, setFilters] = useState({ status: '', priority: '', subject_id: '' })
+  const [search, setSearch] = useState('')
+  const [searchInput, setSearchInput] = useState('')
   const [gradeForm, setGradeForm] = useState(EMPTY_GRADE)
   const [gradeTaskId, setGradeTaskId] = useState(null) // какая задача открыта для оценки
   const [gradeEditId, setGradeEditId] = useState(null) // id оценки при редактировании
@@ -27,6 +29,7 @@ export default function TasksPage() {
     if (filters.status) params.status = filters.status
     if (filters.priority) params.priority = filters.priority
     if (filters.subject_id) params.subject_id = filters.subject_id
+    if (search) params.search = search
     const res = await api.get('/tasks/', { params })
     const taskList = res.data.success || []
     setTasks(taskList)
@@ -45,7 +48,14 @@ export default function TasksPage() {
   }
 
   useEffect(() => { api.get('/subjects/').then(r => setSubjects(r.data.success || [])).catch(console.error) }, [])
-  useEffect(() => { fetchTasks().catch(console.error) }, [filters])
+
+  // debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => setSearch(searchInput), 400)
+    return () => clearTimeout(timer)
+  }, [searchInput])
+
+  useEffect(() => { fetchTasks().catch(console.error) }, [filters, search])
 
   const openCreate = () => { setForm(EMPTY); setEditId(null); setShowForm(true); setError('') }
   const openEdit = t => {
@@ -126,6 +136,18 @@ export default function TasksPage() {
           </h1>
         </div>
         <button className="btn btn-primary" onClick={openCreate}>+ Новая задача</button>
+      </div>
+
+      {/* Search */}
+      <div className="anim d1" style={{ marginBottom: '12px' }}>
+        <input
+          className="input"
+          type="text"
+          value={searchInput}
+          onChange={e => setSearchInput(e.target.value)}
+          placeholder="Поиск по названию задачи..."
+          style={{ maxWidth: '320px' }}
+        />
       </div>
 
       {/* Filters */}
