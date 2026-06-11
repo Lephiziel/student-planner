@@ -21,11 +21,12 @@ export default function Navbar() {
       height: '48px',
       display: 'flex', alignItems: 'center',
     }}>
-      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 20px', width: '100%', display: 'flex', alignItems: 'center' }}>
-        <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--accent)', marginRight: '28px', letterSpacing: '-0.01em' }}>
-          StudentPlanner
+      <div className="navbar-inner">
+        <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--accent)', marginRight: '20px', letterSpacing: '-0.01em', flexShrink: 0 }}>
+          SP
+          <span className="navbar-brand-full">tudentPlanner</span>
         </span>
-        <nav style={{ display: 'flex', gap: '2px', flex: 1 }}>
+        <nav className="navbar-links">
           {nav.map(({ path, label }) => {
             const active = pathname === path
             return (
@@ -47,7 +48,7 @@ export default function Navbar() {
         </nav>
         <button
           onClick={() => { localStorage.removeItem('token'); localStorage.removeItem('refresh_token'); navigate('/login') }}
-          style={{ fontSize: '12px', color: 'var(--text-3)', background: 'none', border: 'none', cursor: 'pointer', padding: '5px 8px', borderRadius: '6px', transition: 'color 0.15s', fontFamily: 'inherit' }}
+          style={{ fontSize: '12px', color: 'var(--text-3)', background: 'none', border: 'none', cursor: 'pointer', padding: '5px 8px', borderRadius: '6px', transition: 'color 0.15s', fontFamily: 'inherit', flexShrink: 0, marginLeft: '8px' }}
           onMouseEnter={e => e.currentTarget.style.color = 'var(--text-2)'}
           onMouseLeave={e => e.currentTarget.style.color = 'var(--text-3)'}
         >

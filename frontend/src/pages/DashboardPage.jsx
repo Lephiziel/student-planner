@@ -43,11 +43,11 @@ export default function DashboardPage() {
       {loading ? (
         <p style={{ color: 'var(--text-3)', fontSize: '13px' }}>Загрузка...</p>
       ) : (
-        <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
+        <div className="dash-layout">
 
           {/* Main */}
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div className="anim d1" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '8px', marginBottom: '14px' }}>
+            <div className="anim d1 stat-grid" style={{ marginBottom: '14px' }}>
               {statCards.map(c => (
                 <div key={c.label} style={{ background: 'var(--bg-1)', border: '1px solid var(--border)', borderRadius: '12px', padding: '14px 16px' }}>
                   <p style={{ fontSize: '24px', fontWeight: 700, color: c.color, letterSpacing: '-0.03em', lineHeight: 1 }}>{c.value}</p>
@@ -100,7 +100,7 @@ export default function DashboardPage() {
 
           {/* Sidebar */}
           {subjects.length > 0 && (
-            <div className="anim d2" style={{ width: '200px', flexShrink: 0 }}>
+            <div className="anim d2 dash-sidebar">
               <p className="section-label">Предметы</p>
               <div style={{ background: 'var(--bg-1)', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden' }}>
                 {subjects.map((s, i) => (

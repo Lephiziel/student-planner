@@ -166,3 +166,228 @@ label.field-label {
 .fc .fc-day-today .fc-daygrid-day-number { color: var(--accent) !important; font-weight: 700 !important; }
 .fc-theme-standard td, .fc-theme-standard th, .fc-theme-standard .fc-scrollgrid { border-color: var(--border) !important; }
 .fc .fc-daygrid-event { border-radius: 4px !important; font-size: 11px !important; font-weight: 500 !important; padding: 1px 5px !important; border: none !important; }
+
+/* ============ Layout / responsive helpers ============ */
+
+.layout-main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 20px;
+}
+
+.navbar-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 2px;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.navbar-links::-webkit-scrollbar { display: none; }
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.dash-layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.dash-sidebar {
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+}
+
+.task-row-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.task-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.subject-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+}
+
+.subject-row-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filters-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.auth-card-wrap {
+  width: 100%;
+  max-width: 380px;
+}
+
+.grade-form-grid {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+}
+
+/* ============ Mobile (<= 720px) ============ */
+
+@media (max-width: 720px) {
+  html, body, #root { font-size: 13px; }
+
+  .layout-main {
+    padding: 16px 12px 60px;
+  }
+
+  .navbar-inner {
+    padding: 0 12px;
+    gap: 8px;
+  }
+
+  .navbar-links {
+    gap: 0;
+  }
+
+  .navbar-links a {
+    padding: 5px 8px !important;
+    font-size: 12px !important;
+    white-space: nowrap;
+  }
+
+  .navbar-brand-full {
+    display: none;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .page-header .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dash-layout {
+    flex-direction: column;
+  }
+
+  .dash-sidebar {
+    width: 100%;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .grade-form-grid {
+    grid-template-columns: 100px 1fr;
+  }
+
+  .task-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .task-row-actions {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .subject-row {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .subject-row-stats {
+    width: 100%;
+    order: 3;
+    justify-content: space-between;
+  }
+
+  .filters-row select {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .fc .fc-toolbar {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch !important;
+  }
+
+  .fc .fc-toolbar-chunk {
+    display: flex;
+    justify-content: center;
+  }
+
+  .calendar-card {
+    padding: 8px !important;
+  }
+
+  .fc .fc-daygrid-day-number {
+    font-size: 10px !important;
+    padding: 2px !important;
+  }
+
+  .fc .fc-daygrid-event {
+    font-size: 9px !important;
+    padding: 0 2px !important;
+  }
+
+  .fc .fc-col-header-cell-cushion {
+    font-size: 9px !important;
+    padding: 4px 0 !important;
+  }
+}

@@ -46,7 +46,7 @@ export default function CalendarPage() {
         ))}
       </div>
 
-      <div className="anim d2" style={{ background: 'var(--bg-1)', border: '1px solid var(--border)', borderRadius: '12px', padding: '16px' }}>
+      <div className="anim d2 calendar-card" style={{ background: 'var(--bg-1)', border: '1px solid var(--border)', borderRadius: '12px', padding: '16px' }}>
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"

@@ -110,6 +110,7 @@ export default function TasksPage() {
   const handleGradeDelete = async (gradeId) => {
     if (!confirm('Удалить самооценку?')) return
     await api.delete(`/grades/${gradeId}`)
+    closeGradeForm()
     fetchTasks()
   }
 
@@ -128,7 +129,7 @@ export default function TasksPage() {
 
   return (
     <Layout>
-      <div className="anim" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+      <div className="anim page-header">
         <div>
           <p className="section-label">Планирование</p>
           <h1 style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text-1)', letterSpacing: '-0.025em' }}>
@@ -146,12 +147,12 @@ export default function TasksPage() {
           value={searchInput}
           onChange={e => setSearchInput(e.target.value)}
           placeholder="Поиск по названию задачи..."
-          style={{ maxWidth: '320px' }}
+          style={{ maxWidth: '320px', width: '100%' }}
         />
       </div>
 
       {/* Filters */}
-      <div className="anim d1" style={{ display: 'flex', gap: '6px', marginBottom: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
+      <div className="anim d1 filters-row">
         {[
           { key: 'status', opts: [['','Статус'],['todo','К выполнению'],['in_progress','В работе'],['done','Готово']] },
           { key: 'priority', opts: [['','Приоритет'],['low','Низкий'],['medium','Средний'],['high','Высокий']] },
@@ -178,7 +179,7 @@ export default function TasksPage() {
           </div>
           {error && <p style={{ fontSize: '12px', color: 'var(--red)', marginBottom: '12px' }}>{error}</p>}
           <form onSubmit={handleSubmit}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+            <div className="form-grid" style={{ marginBottom: '12px' }}>
               <div style={{ gridColumn: '1/-1' }}>
                 <label className="field-label">Название</label>
                 <input className="input" type="text" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required placeholder="Название задачи" />
@@ -234,8 +235,7 @@ export default function TasksPage() {
             return (
               <div key={t.ID} className={`anim d${Math.min(i+1,4)}`}>
                 {/* Task row */}
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: '12px', padding: '11px 14px',
+                <div className="task-row" style={{
                   background: 'var(--bg-1)',
                   border: `1px solid ${gradeOpen ? 'var(--border-accent)' : 'var(--border)'}`,
                   borderLeft: `3px solid ${overdue ? 'var(--red)' : PRIORITY[t.priority].dot}`,
@@ -245,7 +245,7 @@ export default function TasksPage() {
                   onMouseEnter={e => { if (!gradeOpen) e.currentTarget.style.background = 'var(--bg-2)' }}
                   onMouseLeave={e => { if (!gradeOpen) e.currentTarget.style.background = 'var(--bg-1)' }}
                 >
-                  <div style={{ flex: 1, minWidth: 0 }}>
+                  <div className="task-row-info">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px', flexWrap: 'wrap' }}>
                       {subj && (
                         <span style={{ fontSize: '10px', fontWeight: 600, padding: '1px 6px', borderRadius: '99px', background: (subj.color || '#a78bfa') + '1a', color: subj.color || 'var(--accent)', border: `1px solid ${subj.color || '#a78bfa'}33` }}>
@@ -261,7 +261,7 @@ export default function TasksPage() {
                     {t.due_date && <p style={{ fontSize: '11px', color: 'var(--text-3)', marginTop: '2px' }}>до {new Date(t.due_date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</p>}
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+                  <div className="task-row-actions">
                     <span className={`badge ${STATUS[t.status].cls}`}>{STATUS[t.status].label}</span>
                     <select value={t.status} onChange={e => handleStatus(t, e.target.value)} style={{ ...selStyle, fontSize: '11px', padding: '4px 7px' }}>
                       <option value="todo">К выполнению</option>
@@ -296,7 +296,7 @@ export default function TasksPage() {
                       <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-2)' }}>
                         {gradeEditId ? 'Редактировать самооценку' : 'Добавить самооценку'}
                       </span>
-                      {hasGrade && !gradeEditId && (
+                      {hasGrade && (
                         <button
                           onClick={() => handleGradeDelete(taskGrades[0].ID)}
                           style={{ fontSize: '11px', color: 'var(--red)', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
@@ -307,7 +307,7 @@ export default function TasksPage() {
                     </div>
                     {gradeError && <p style={{ fontSize: '12px', color: 'var(--red)', marginBottom: '10px' }}>{gradeError}</p>}
                     <form onSubmit={handleGradeSubmit}>
-                      <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '10px', marginBottom: '12px' }}>
+                      <div className="grade-form-grid" style={{ gap: '10px', marginBottom: '12px' }}>
                         <div>
                           <label className="field-label">Оценка (1–5)</label>
                           <input

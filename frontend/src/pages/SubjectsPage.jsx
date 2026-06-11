@@ -40,7 +40,7 @@ export default function SubjectsPage() {
 
   return (
     <Layout>
-      <div className="anim" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+      <div className="anim page-header">
         <div>
           <p className="section-label">Учёба</p>
           <h1 style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text-1)', letterSpacing: '-0.025em' }}>Предметы</h1>
@@ -89,8 +89,7 @@ export default function SubjectsPage() {
       ) : (
         <div style={{ background: 'var(--bg-1)', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden' }}>
           {subjects.map((s, i) => (
-            <div key={s.ID} className={`anim d${Math.min(i+1,4)}`} style={{
-              display: 'flex', alignItems: 'center', gap: '10px', padding: '11px 14px',
+            <div key={s.ID} className={`anim d${Math.min(i+1,4)} subject-row`} style={{
               borderTop: i > 0 ? '1px solid var(--border)' : 'none', transition: 'background 0.1s',
             }}
               onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-2)'}
@@ -101,22 +100,22 @@ export default function SubjectsPage() {
               {(() => {
                 const st = stats[s.ID]
                 if (!st || st.total_tasks === 0) {
-                  return <span style={{ fontSize: '11px', color: 'var(--text-3)' }}>Нет задач</span>
+                  return <span style={{ fontSize: '11px', color: 'var(--text-3)', flexShrink: 0 }}>Нет задач</span>
                 }
                 const pct = Math.round((st.done_tasks / st.total_tasks) * 100)
                 return (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div className="subject-row-stats">
                     <span style={{ fontSize: '11px', color: 'var(--text-3)' }}>
                       {st.done_tasks}/{st.total_tasks} задач
                     </span>
-                    <div style={{ width: '60px', height: '4px', background: 'var(--bg-3)', borderRadius: '99px', overflow: 'hidden' }}>
+                    <div style={{ width: '60px', height: '4px', background: 'var(--bg-3)', borderRadius: '99px', overflow: 'hidden', flex: '1 1 auto', maxWidth: '120px' }}>
                       <div style={{ width: `${pct}%`, height: '100%', background: s.color || 'var(--accent)', borderRadius: '99px', transition: 'width 0.5s ease' }} />
                     </div>
                     <span style={{ fontSize: '11px', color: 'var(--text-2)', fontWeight: 600, minWidth: '28px', textAlign: 'right' }}>{pct}%</span>
                   </div>
                 )
               })()}
-              <div style={{ display: 'flex', gap: '2px' }}>
+              <div style={{ display: 'flex', gap: '2px', flexShrink: 0, order: 2 }}>
                 <button className="icon-btn" onClick={() => openEdit(s)}>✏</button>
                 <button className="icon-btn" onClick={() => handleDelete(s.ID)}
                   onMouseEnter={e => e.currentTarget.style.color = 'var(--red)'}
