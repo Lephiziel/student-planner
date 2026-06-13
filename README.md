@@ -409,4 +409,4 @@ MIT License
 * Anonym (Documentation)
 
 Student Planner — учебный проект по разработке современного full-stack приложения на React и Go.
-d
+
