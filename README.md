@@ -402,9 +402,10 @@ MIT License
 
 # 👨‍💻 Authors
 
-* Lephiziel (backend dev.)
-* dreddieee (fronted dev.)
-* Krelick ()
-* nershoov ()
+* Lephiziel (Backend Dev.)
+* dreddieee (Fronted Dev.)
+* Krelick (Systems Analyst)
+* nershoov (QA Engineer)
+* Anonym (Documentation)
 
 Student Planner — учебный проект по разработке современного full-stack приложения на React и Go.
