@@ -400,13 +400,5 @@ MIT License
 
 ---
 
-# 👨‍💻 Authors
-
-* Lephiziel (Backend Dev.)
-* dreddieee (Fronted Dev.)
-* Krelick (Systems Analyst)
-* nershoov (QA Engineer)
-* danokpid (Documentation)
-
 Student Planner — учебный проект по разработке современного full-stack приложения на React и Go.
 
